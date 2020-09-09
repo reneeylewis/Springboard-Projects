@@ -78,7 +78,7 @@ WHERE joindate IN (SELECT MAX(joindate) FROM Members);
 Include in your output the name of the court, and the name of the member
 formatted as a single column. Ensure no duplicate data, and order by
 the member name. */
-SELECT DISTINCT name AS tennis_court, CONCAT(firstname, surname) AS membername
+SELECT DISTINCT name AS tennis_court, CONCAT_WS(' ', firstname, surname) AS membername
 FROM Bookings
 	INNER JOIN Members
 	USING (memid)
@@ -93,7 +93,7 @@ different costs to members (the listed costs are per half-hour 'slot'), and
 the guest user's ID is always 0. Include in your output the name of the
 facility, the name of the member formatted as a single column, and the cost.
 Order by descending cost, and do not use any subqueries. */
-SELECT name AS facility, CONCAT(firstname, surname) AS member, 
+SELECT name AS facility, CONCAT_WS(' ', firstname, surname) AS member, 
 	CASE WHEN memid=0 THEN f.guestcost*b.slots
 	ELSE f.membercost*b.slots
 	END AS cost
@@ -110,7 +110,7 @@ ORDER BY cost DESC;
 
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 SELECT facility, member, cost 
-FROM (SELECT name AS facility, CONCAT(firstname, surname) AS member, 
+FROM (SELECT name AS facility, CONCAT_WS(' ', firstname, surname) AS member, 
 		CASE WHEN memid=0 THEN f.guestcost*b.slots
 		ELSE f.membercost*b.slots
 		END AS cost
@@ -148,8 +148,8 @@ FROM (SELECT name,
 			SUM(CASE WHEN memid=0 THEN f.guestcost*b.slots
 				ELSE f.membercost*b.slots
 				END) AS revenue
-	  FROM Bookings AS b
-		INNER JOIN Facilities AS f
+	  FROM Facilities AS f
+		INNER JOIN Bookings AS b
     	USING (facid)
 	  GROUP BY name 
 	)AS totalrevenue
@@ -157,13 +157,13 @@ WHERE revenue<1000
 ORDER BY revenue;
 
 /* Q11: Produce a report of members and who recommended them in alphabetic surname,firstname order */
-SELECT DISTINCT CONCAT(surname,firstname) AS member, recommendedby
+SELECT DISTINCT CONCAT_WS(',', surname, firstname) AS member, recommendedby
 FROM Members
 WHERE recommendedby IS NOT NULL
 ORDER BY member; 
 
 /* Q12: Find the facilities with their usage by member, but not guests */
-SELECT name, CONCAT(surname,firstname) AS member, SUM(slots) as "Total Slots"
+SELECT name, CONCAT_WS(',', surname, firstname) AS member, SUM(slots) as "Total Slots"
 FROM Facilities
 	INNER JOIN Bookings AS b
     USING (facid)
