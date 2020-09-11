@@ -37,10 +37,12 @@ SELECT name
 FROM Facilities
 WHERE membercost > 0.0;
 
+
 /* Q2: How many facilities do not charge a fee to members? */
 SELECT COUNT(*)
 FROM Facilities
 WHERE membercost = 0.0;
+
 
 /* Q3: Write an SQL query to show a list of facilities that charge a fee to members,
 where the fee is less than 20% of the facility's monthly maintenance cost.
@@ -50,11 +52,13 @@ SELECT facid, name, membercost, monthlymaintenance
 FROM Facilities
 WHERE membercost BETWEEN 0.1 AND (.20 * monthlymaintenance);
 
+
 /* Q4: Write an SQL query to retrieve the details of facilities with ID 1 and 5.
 Try writing the query without using the OR operator. */
 SELECT *
 FROM Facilities
 WHERE facid in (1,5);
+
 
 /* Q5: Produce a list of facilities, with each labelled as
 'cheap' or 'expensive', depending on if their monthly maintenance cost is
@@ -66,6 +70,7 @@ CASE
     ELSE 'cheap'
 END
 FROM Facilities;
+
 
 /* Q6: You'd like to get the first and last name of the last member(s)
 who signed up. Try not to use the LIMIT clause for your solution. */
@@ -87,6 +92,7 @@ FROM Bookings
 WHERE name LIKE 'Tennis%'
 ORDER BY membername;
 
+
 /* Q8: Produce a list of bookings on the day of 2012-09-14 which
 will cost the member (or guest) more than $30. Remember that guests have
 different costs to members (the listed costs are per half-hour 'slot'), and
@@ -107,6 +113,7 @@ WHERE (starttime LIKE '2012-09-14%') AND (
 	  		(m.memid = 0 AND f.guestcost*b.slots>30)
 	)
 ORDER BY cost DESC;
+
 
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 SELECT facility, member, cost 
@@ -156,11 +163,13 @@ FROM (SELECT name,
 WHERE revenue<1000
 ORDER BY revenue;
 
+
 /* Q11: Produce a report of members and who recommended them in alphabetic surname,firstname order */
 SELECT DISTINCT CONCAT_WS(',', surname, firstname) AS member, recommendedby
 FROM Members
 WHERE recommendedby IS NOT NULL
 ORDER BY member; 
+
 
 /* Q12: Find the facilities with their usage by member, but not guests */
 SELECT name, CONCAT_WS(',', surname, firstname) AS member, SUM(slots) as "Total Slots"
@@ -175,6 +184,7 @@ WHERE
 	AND memid != 0
 GROUP BY name, member
 ORDER BY name, member;
+
 
 /* Q13: Find the facilities usage by month, but not guests */
 SELECT name, EXTRACT(MONTH FROM starttime) as month, SUM(slots) as "Total Slots"
